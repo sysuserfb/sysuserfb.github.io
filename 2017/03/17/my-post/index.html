@@ -22,7 +22,59 @@
     <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
   
   <link rel="stylesheet" href="/css/style.css">
-  
+  <style type="text/css">
+		.main{
+			text-align: center;
+			padding-top: 40px;
+		}
+		img{
+			width: 2rem;
+			height: 2rem;
+			vertical-align: middle;
+		}
+		.num{
+			vertical-align: middle;
+		}
+		.time,.button{
+			margin: 50px auto 100px;
+			text-align: center;
+		}
+		.time{
+			width: 500px;
+			height: 200px;
+			font-size: 10rem;
+		}
+		#btn{
+			width: 150px;
+			height: 3rem;
+			font-size: 1.3rem;
+    		line-height: 3rem;
+			color: white;
+			border-radius: 30px;
+			border: none;
+			background-color: #2bf;
+		}
+		.float{
+			float: left;
+			position: absolute;
+    		top: 10%;
+    		left: -140px;
+    		border: 1px solid blue;
+    		border-radius: 0 10px;
+    		padding: 20px;
+    		transition: all 1s;
+		}
+		.float:hover{
+			left: 10px;
+		}
+		.ninput{
+			width: 50px;
+		}
+		.btn{
+			float: right;
+			margin-top: 10px;
+		}
+	</style>
 
 </head>
 
@@ -81,8 +133,86 @@
       </header>
     
     <div class="article-entry" itemprop="articleBody">
-      
-        
+      <div class="main">
+	<img src="tomato.gif"> <span class="num">×</span> <span id="num" class="num">0</span>
+	<div class="time">
+		<span id="minutes">25</span>:<span id="seconds">00</span>
+	</div>
+	<div class="button"><button id="btn" onclick="Tomatoes()">开始工作</button></div>
+</div>
+	<div class="float">
+		工作时间：<input type="number" class="ninput" id="tomatoes" value="25" max="60" min="5"> 分钟<br>
+		休息时间：<input type="number" class="ninput" id="rest" value="5" max="60" min="0"> 分钟<br>
+		<button class="btn" onclick="setTime()">确定</button>
+	</div>
+       <script type="text/javascript">
+	var minutes=document.getElementById('minutes');
+	var seconds=document.getElementById('seconds');
+	var btn=document.getElementById('btn');
+	var tomat=document.getElementById('num');
+	var music=document.getElementById('music');
+	var timer;
+	var state=1;
+	var tomatoes=0;
+	var workTime=25;
+	var restTime=5;
+	tomat.innerHTML=tomatoes;
+	function setTime(){
+		workTime=document.getElementById('tomatoes').value;
+		restTime=document.getElementById('rest').value;
+		clearInterval(timer);
+		state=1;
+		btn.disabled=false;
+		changeTime(min2sec(workTime),null)
+	}
+	function min2sec(minute){
+		return parseInt(minute*60);
+	}
+	function changeTime(second,a){
+		var min=parseInt(second/60);
+		var sec=second%60;
+		if(min<10)min='0'+min;
+		if(sec<10)sec='0'+sec;
+		minutes.innerHTML=min;
+		seconds.innerHTML=sec;
+		if(second==-1){
+			if(state){
+				state=0;
+				btn.style.backgroundColor='#2d8';
+				btn.innerHTML='开始休息'
+				tomatoes++;
+				tomat.innerHTML=tomatoes;
+				changeTime(min2sec(restTime),null);
+			}else{
+				state=1;
+				btn.style.backgroundColor='#2bf';
+				btn.innerHTML='开始工作';
+				changeTime(min2sec(workTime),null);
+			}
+			music.play();
+			clearInterval(a);
+			btn.disabled=false;
+		}
+		
+	}
+	function Tomatoes(){
+		var time=0.05;
+		btn.disabled=true;
+		if(state){
+			time=workTime;
+		}else{
+			time=restTime;
+		}
+		var second=min2sec(time);
+		startTime(second);
+	}
+	function startTime(time){
+		timer=setInterval(function(){
+			time--;
+			changeTime(time,timer);
+		},1000);
+	}
+</script> 
       
     </div>
     <footer class="article-footer">
